@@ -1,12 +1,12 @@
 const formulario = document.querySelector("#formulario")
 const listaTweets = document.querySelector("#lista-tweets")
-let tweets = [];
+let tweets = []
 
 cargarEventListeners()
-function cargarEventListeners(){
-    formulario.addEventListener("submit",agregarTweet)
+function cargarEventListeners() {
+    formulario.addEventListener("submit", agregarTweet)
     document.addEventListener("DOMContentLoaded",()=>{
-        tweets = JSON.parse(localStorage.getItem("tweets")) || []
+        tweets = JSON.parse(localStorage.getItem("carrito")) || []
         crearHTML()
     })
 }
@@ -15,7 +15,7 @@ function agregarTweet(e){
     e.preventDefault()
     const tweet = document.querySelector("#tweet").value
     if(tweet === ""){
-        mostrarError("Un mensaje no puede ir vacio")
+        mostrarError()
     }else{
         const tweetObj = {
             id: Date.now(),
@@ -23,17 +23,15 @@ function agregarTweet(e){
         }
         tweets = [...tweets,tweetObj]
         crearHTML()
-        console.log(tweets)
+        formulario.reset()
     }
-    formulario.reset()
 }
 
-function mostrarError(error){
+function mostrarError(){
     const mensajeError = document.createElement("p")
-    mensajeError.textContent = error
     mensajeError.classList.add("error")
+    mensajeError.textContent = "El mensaje no puede ir vacio"
     const contenido = document.querySelector("#contenido")
-
     const errores = document.querySelectorAll(".error")
     if(errores.length === 0){
         contenido.appendChild(mensajeError)
@@ -46,28 +44,28 @@ function mostrarError(error){
 function crearHTML(){
     limpiarHTML()
     tweets.forEach(tweet=>{
-        const btnEliminar = document.createElement("a")
-        btnEliminar.textContent = "X"
-        btnEliminar.classList.add("borrar-tweet")
-
-        btnEliminar.onclick = ()=>{
-            borrarTweet(tweet.id)
-        }
         const li = document.createElement("li")
+        const btnEliminar = document.createElement("a")
+        btnEliminar.classList.add("borrar-tweet")
+        btnEliminar.textContent = "X"
+        btnEliminar.onclick = (tweet)=>{
+            eliminarTweet(tweet.id)
+        }
         li.textContent = tweet.texto
+        const listaTweets = document.querySelector("#lista-tweets")
         listaTweets.appendChild(li)
         li.appendChild(btnEliminar)
     })
-
     sincronizarStorage()
 }
+
 function sincronizarStorage(){
-    localStorage.setItem("tweets",JSON.stringify(tweets))
+    localStorage.setItem("carrito",JSON.stringify(tweets))
 }
 
-function borrarTweet(id){
+function eliminarTweet(id){
     tweets = tweets.filter(tweet=>tweet.id !== id)
-    crearHTML()
+    limpiarHTML()
 }
 
 function limpiarHTML(){

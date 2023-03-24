@@ -11,6 +11,7 @@ h1, h2 {
     cursor: pointer;
     color: red;
     font-weight: bold;
+    padding-right: 1rem;
 }
 
 .error {
@@ -22,4 +23,11 @@ h1, h2 {
     max-width: 400px;
     margin: 0 auto;
     color: white;
+}
+.centrar{
+    list-style: none;
+    background-color: #93c5fd;
+    color: black;
+    padding-left: 1rem;
+    padding-block: 0.5rem;
 }

@@ -4,11 +4,9 @@ let tweets = [];
 
 cargarEventListeners()
 function cargarEventListeners(){
-    //cuando el usuario agrega un nuevo tweet
     formulario.addEventListener("submit",agregarTweet)
-    //cuando el documento este listo
-    document.addEventListener("DOMContentLoaded", ()=>{
-        tweets = JSON.parse(localStorage.getItem("tweets")) || [];
+    document.addEventListener("DOMContentLoaded",()=>{
+        tweets = JSON.parse(localStorage.getItem("tweets")) || []
         crearHTML()
     })
 }
@@ -24,11 +22,10 @@ function agregarTweet(e){
             texto: tweet
         }
         tweets = [...tweets,tweetObj]
+        crearHTML()
+        console.log(tweets)
     }
-    
-    crearHTML()
     formulario.reset()
-    console.log(tweets)
 }
 
 function mostrarError(error){
@@ -41,35 +38,29 @@ function mostrarError(error){
     if(errores.length === 0){
         contenido.appendChild(mensajeError)
     }
-
-    setTimeout(() => {
+    setTimeout(()=>{
         mensajeError.remove()
-    }, 3000);
+    },3000)
 }
 
 function crearHTML(){
     limpiarHTML()
-
     tweets.forEach(tweet=>{
-        const {texto} = tweet
-
         const btnEliminar = document.createElement("a")
+        btnEliminar.textContent = "X"
         btnEliminar.classList.add("borrar-tweet")
-        btnEliminar.innerText = "X"
-        //añadir la funcion de eliminar
-        btnEliminar.onclick = () =>{
+
+        btnEliminar.onclick = ()=>{
             borrarTweet(tweet.id)
         }
-
         const li = document.createElement("li")
-        li.textContent = texto
-        li.appendChild(btnEliminar)
+        li.textContent = tweet.texto
         listaTweets.appendChild(li)
+        li.appendChild(btnEliminar)
     })
-    
+
     sincronizarStorage()
 }
-//agrega los tweets acutalies al localstorage
 function sincronizarStorage(){
     localStorage.setItem("tweets",JSON.stringify(tweets))
 }
