@@ -6,7 +6,7 @@ cargarEventListeners()
 function cargarEventListeners(){
     formulario.addEventListener("submit",agregarTweet)
     document.addEventListener("DOMContentLoaded",()=>{
-        tweets = JSON.parse(localStorage.getItem("tweets")) || []
+        tweets = JSON.parse(localStorage.getItem("tweet")) || []
         crearHTML()
     })
 }
@@ -14,9 +14,7 @@ function cargarEventListeners(){
 function agregarTweet(e){
     e.preventDefault()
     const tweet = document.querySelector("#tweet").value
-    if(tweet === ""){
-        mostrarError()
-    }else{
+    if(tweet.length > 0){
         const tweetObj = {
             id: Date.now(),
             texto: tweet
@@ -25,34 +23,35 @@ function agregarTweet(e){
         crearHTML()
         formulario.reset()
         console.log(tweets)
+    }else{
+        mostrarError()
     }
 }
 
 function crearHTML(){
     limpiarHTML()
     tweets.forEach(tweet=>{
-        const btnEliminar = document.createElement("a")
         const li = document.createElement("li")
-        btnEliminar.classList.add("borrar-tweet")
+        const btnEliminar = document.createElement("a")
         btnEliminar.textContent = "X"
+        btnEliminar.classList.add("borrar-tweet")
         btnEliminar.onclick = ()=>{
             borrarTweet(tweet.id)
         }
         li.textContent = tweet.texto
-        li.appendChild(btnEliminar)
         listaTweets.appendChild(li)
+        li.appendChild(btnEliminar)
     })
-    
     sincronizarStorage()
 }
 
-function borrarTweet(id){
-    tweets = tweets.filter(tweet=>tweet.id !== id)
-    crearHTML()
+function sincronizarStorage(){
+    localStorage.setItem("tweet",JSON.stringify(tweets))
 }
 
-function sincronizarStorage(){
-    localStorage.setItem("tweets",JSON.stringify(tweets))
+function borrarTweet(id){
+    tweets = tweets.filter(tweet => tweet.id !== id)
+    crearHTML()
 }
 
 function limpiarHTML(){
@@ -61,18 +60,16 @@ function limpiarHTML(){
     }
 }
 
-
-
 function mostrarError(){
     const mensajeError = document.createElement("p")
-    mensajeError.textContent = "Los tweets no pueden ir vacios"
     mensajeError.classList.add("error")
+    mensajeError.textContent = "El tweet no puede ir vacio"
     const contenido = document.querySelector("#contenido")
     const errores = document.querySelectorAll(".error")
     if(errores.length === 0){
         contenido.appendChild(mensajeError)
     }
-    setTimeout(() => {
+    setTimeout(()=>{
         mensajeError.remove()
-    }, 3000);
+    },3000)
 }
